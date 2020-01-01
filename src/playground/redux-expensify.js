@@ -36,16 +36,14 @@ const setTextFilter = (text = '') => ({
 })
 
 //SORT_BY_DATE
-const sortByDate = (date = undefined) => ({
-	type: 'SORT_BY_DATE',
-	date
+const sortByDate = () => ({
+	type: 'SORT_BY_DATE'
 })
 
 //SORT_BY_AMOUNT
 
-const sortByAmount = (amount = 0) => ({
-	type: 'SORT_BY_AMOUNT',
-	amount
+const sortByAmount = () => ({
+	type: 'SORT_BY_AMOUNT'
 })
 
 //SET_START_DATE
@@ -109,13 +107,13 @@ const filtersReducer = ( state = filtersReducerDefaultState, action) => {
 	case 'SORT_BY_DATE':
 		return {
 			...state,
-			date: action.date
+			sortBy: 'date'
 		}
 
 	case 'SORT_BY_AMOUNT':
 		return {
 			...state,
-			amount: action.amount
+			sortBy: 'amount'
 		}
 
 	case 'SET_START_DATE':
@@ -136,44 +134,71 @@ const filtersReducer = ( state = filtersReducerDefaultState, action) => {
 
 };
 
-//Store creation
+//Get visible expenses
+const getVisibleExpenses = (expenses, { text, sortBy, startDate, endDate }) => {
+	return expenses.filter((expense) => {
+		const startDateMatch = typeof startDate !== 'number' || expense.createdAt >= startDate
+		const endDateMatch = typeof endDate !== 'number' || expense.createdAt <= endDate
+		const textMatch = expense.description.toLowerCase().includes(text.toLowerCase())
 
+		//conferir se expenses.description tem o conteudo da variavel text nele
+		//user javascript includes
+		//converter os dois textos para lower case
+
+		
+
+
+
+		return startDateMatch && endDateMatch && textMatch
+	})
+}
+
+
+//Store creation
 const store = createStore(combineReducers({
 	expenses: expensesReducer,
 	filters: filtersReducer
 }
 ));
 
-store.subscribe(() => {
-	console.log(store.getState());
-});
+
 
 const exp1 = {
 	description: 'Rent',
-	amount: 100
+	amount: 100,
+	createdAt: 1000
 }
 
 const exp2 = {
 	description: 'Coffee', 
-	amount: 200
+	amount: 200,
+	createdAt: 1200
 }
 
-const exp3 = {
-	description: 'Aluguel', 
-	amount: 500
-}
+// const exp3 = {
+// 	description: 'Aluguel', 
+// 	amount: 500,
+// 	createdAt: -600
+// }
+
+store.subscribe(() => {
+	const state = store.getState()
+	const visibleExpenses = getVisibleExpenses(state.expenses, state.filters)
+	console.log(visibleExpenses)
+});
+
 
 const expenseOne = store.dispatch(addExpense(exp1))
 const expenseTwo = store.dispatch(addExpense(exp2))
+//const expenseThree = store.dispatch(addExpense(exp3))
 store.dispatch(setTextFilter('coffee'))
-const expenseThree = store.dispatch(addExpense(exp3))
+store.dispatch(sortByDate())
+store.dispatch(setStartDate(1000))
 
-//edit expense amount
-store.dispatch(setTextFilter('rent'))
-store.dispatch(sortByDate('2019-01-01'))
-store.dispatch(sortByAmount(50))
-store.dispatch(setStartDate('2019-01-01'))
-store.dispatch(setEndDate('2019-01-10'))
+// //edit expense amount
 
 
-console.log(store.getState())
+// //store.dispatch(sortByAmount())
+// store.dispatch(setStartDate('2019-01-01'))
+// store.dispatch(setEndDate('2019-01-10'))
+
