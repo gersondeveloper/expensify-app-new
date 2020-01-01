@@ -28,8 +28,8 @@ const editExpense = ({id, updates}) => ({
 	id,
 	updates
 })
-//SET_TEXT_FILTER
 
+//SET_TEXT_FILTER
 const setTextFilter = (text = '') => ({
 	type: 'SET_TEXT_FILTER',
 	text
@@ -41,7 +41,6 @@ const sortByDate = () => ({
 })
 
 //SORT_BY_AMOUNT
-
 const sortByAmount = () => ({
 	type: 'SORT_BY_AMOUNT'
 })
@@ -59,7 +58,6 @@ const setEndDate = (endDate = '') => ({
 })
 
 //Expense reducer
-
 const expensesReducerDefaultState = [];
 
 const expensesReducer = ( state = expensesReducerDefaultState, action) => {
@@ -86,7 +84,6 @@ const expensesReducer = ( state = expensesReducerDefaultState, action) => {
 
 
 //Filter reducers
-
 const filtersReducerDefaultState = { 
 	text: '',
 	sortBy: 'date',
