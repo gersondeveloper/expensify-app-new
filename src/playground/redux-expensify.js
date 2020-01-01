@@ -139,17 +139,17 @@ const getVisibleExpenses = (expenses, { text, sortBy, startDate, endDate }) => {
 	return expenses.filter((expense) => {
 		const startDateMatch = typeof startDate !== 'number' || expense.createdAt >= startDate
 		const endDateMatch = typeof endDate !== 'number' || expense.createdAt <= endDate
-		const textMatch = expense.description.toLowerCase().includes(text.toLowerCase())
-
 		//conferir se expenses.description tem o conteudo da variavel text nele
 		//user javascript includes
 		//converter os dois textos para lower case
-
-		
-
-
+		const textMatch = expense.description.toLowerCase().includes(text.toLowerCase())
 
 		return startDateMatch && endDateMatch && textMatch
+	}).sort((a,b) => {
+		if(sortBy === 'date')
+			return a.createdAt < b.createdAt ? 1 : -1
+		else if(sortBy === 'amount')
+			return  a.amount < b.amount ? 1 : -1
 	})
 }
 
@@ -166,7 +166,7 @@ const store = createStore(combineReducers({
 const exp1 = {
 	description: 'Rent',
 	amount: 100,
-	createdAt: 1000
+	createdAt: 1800
 }
 
 const exp2 = {
@@ -191,8 +191,9 @@ store.subscribe(() => {
 const expenseOne = store.dispatch(addExpense(exp1))
 const expenseTwo = store.dispatch(addExpense(exp2))
 //const expenseThree = store.dispatch(addExpense(exp3))
-store.dispatch(setTextFilter('coffee'))
+//store.dispatch(setTextFilter('coffee'))
 store.dispatch(sortByDate())
+//store.dispatch(sortByAmount())
 store.dispatch(setStartDate(1000))
 
 // //edit expense amount
