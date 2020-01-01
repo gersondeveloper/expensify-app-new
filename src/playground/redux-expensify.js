@@ -1,5 +1,6 @@
 import {  createStore, combineReducers } from "redux";
 import uuid from 'uuid'
+import { getAllByPlaceholderText } from "@testing-library/react";
 
 //Configure reducers for all these actions
 //ADD-EXPENSE
@@ -35,10 +36,29 @@ const setTextFilter = (text = '') => ({
 })
 
 //SORT_BY_DATE
-//SORT_BY_AMOUNT
-//SET_START_DATE
-//SET_END_DATE
+const sortByDate = (date = undefined) => ({
+	type: 'SORT_BY_DATE',
+	date
+})
 
+//SORT_BY_AMOUNT
+
+const sortByAmount = (amount = 0) => ({
+	type: 'SORT_BY_AMOUNT',
+	amount
+})
+
+//SET_START_DATE
+const setStartDate = (startDate = '') => ({
+	type: 'SET_START_DATE',
+	startDate
+})
+
+//SET_END_DATE
+const setEndDate = (endDate = '') => ({
+	type: 'SET_END_DATE',
+	endDate
+})
 
 //Expense reducer
 
@@ -85,6 +105,30 @@ const filtersReducer = ( state = filtersReducerDefaultState, action) => {
 			...state,
 			text: action.text
 		}
+	
+	case 'SORT_BY_DATE':
+		return {
+			...state,
+			date: action.date
+		}
+
+	case 'SORT_BY_AMOUNT':
+		return {
+			...state,
+			amount: action.amount
+		}
+
+	case 'SET_START_DATE':
+		return {
+			...state,
+			startDate: action.startDate
+		}
+
+	case 'SET_END_DATE':
+		return {
+			...state,
+			endDate: action.endDate
+		}
 
 	default:
 		return state;
@@ -125,5 +169,11 @@ store.dispatch(setTextFilter('coffee'))
 const expenseThree = store.dispatch(addExpense(exp3))
 
 //edit expense amount
-store.dispatch(editExpense(expenseThree.expense.id, {amount:9999} ))
 store.dispatch(setTextFilter('rent'))
+store.dispatch(sortByDate('2019-01-01'))
+store.dispatch(sortByAmount(50))
+store.dispatch(setStartDate('2019-01-01'))
+store.dispatch(setEndDate('2019-01-10'))
+
+
+console.log(store.getState())
