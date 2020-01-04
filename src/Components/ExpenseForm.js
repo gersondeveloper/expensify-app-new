@@ -11,7 +11,8 @@ export default class ExpenseForm extends React.Component {
         note: '',
         amount: 0,
         createdAt: moment(),
-        focused: false
+        focused: false,
+        error: undefined
     }
 
     onDescriptionChange = (e) => {
@@ -21,7 +22,7 @@ export default class ExpenseForm extends React.Component {
 
     onAmountChange = (e) => {
         const amount = e.target.value
-        if (amount.match(/^\d*(\.\d{0,2})?$/)) {
+        if (!amount || amount.match(/^\d{1,}(\.\d{0,2})?$/)) {
             this.setState(() => ({ amount }));
           }
     }
@@ -32,14 +33,32 @@ export default class ExpenseForm extends React.Component {
     }
 
     onDateChange = (createdAt) => {
-        this.setState({ createdAt })
+        if(createdAt)
+            this.setState({ createdAt })
+    }
+
+    onSubmitForm = (e) => {
+        e.preventDefault()
+        if(!this.state.description || !this.state.amount)
+            this.setState ({ error: 'Please enter a valid description and amount' })
+        else   
+            this.setState({ error: undefined})
+            
+            const obj = {
+                description: this.state.description,
+                note: this.state.note,
+                amount: parseFloat(this.state.amount, 10),
+                createAt: moment().format('ll')
+            }
+        
+        this.props.onSubmit(obj)
     }
 
     render() {
         return (
             <div>
                 <div className='container'>
-                    <form>
+                    <form onSubmit={this.onSubmitForm}>
                         <div className="form-group">
                             <label htmlFor="description">Description</label>
                             <input 
@@ -67,7 +86,8 @@ export default class ExpenseForm extends React.Component {
                             onDateChange={this.onDateChange}
                             focused={this.state.focused}
                             onFocusChange={({ focused }) => this.setState({ focused })}
-                            numberOfMonths={1}
+                            numberOfMonths={2}
+                            isOutsideRange={() => false}
                         />
 
                         <div className="form-group">
@@ -81,10 +101,12 @@ export default class ExpenseForm extends React.Component {
                         </div>
                         <div>
                             <button 
-                                type="button" 
-                                className="btn btn-primary">
+                                type="submit" 
+                                className="btn btn-primary"
+                                >
                                     Add expense
                             </button>
+                            { this.state.error && <p>{ this.state.error} </p>}
                         </div>
                     </form>
                 </div>
