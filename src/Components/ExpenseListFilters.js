@@ -1,39 +1,66 @@
 import React from 'react'
+import { DateRangePicker } from 'react-dates'
 import { connect } from 'react-redux'
-import { sortByDate, sortByAmount, setTextFilter } from '../actions/filters'
+import { sortByDate, sortByAmount, setTextFilter, setStartDate, setEndDate } from '../actions/filters'
 
-const ExpenseListFilters = (props) => (
-    <div>
-        <input type='text' value = {props.filters.text} onChange = {(e) => {
-            props.dispatch(setTextFilter(e.target.value))
+class ExpenseListFilters extends React.Component{
+    
+   state = {
+    focused: null
+   }
+
+   onDatesChange = ( { startDate, endDate} ) => {
+        this.props.dispatch(setStartDate(startDate))
+        this.props.dispatch(setEndDate(endDate))
+    }
+
+    render() {
+        return (
+            <div>
+        <input type='text' value = { this.props.filters.text } onChange = {(e) => {
+            this.props.dispatch(setTextFilter(e.target.value))
         }} />
         <select 
-            value = {props.filters.sortBy} 
+            value = { this.props.filters.sortBy } 
             onChange = {(e) => {
             switch(e.target.value){
                 case 'date':
-                    props.dispatch(sortByDate())
+                    this.props.dispatch(sortByDate())
                     break
 
                 case 'amount':
-                    props.dispatch(sortByAmount())
+                    this.props.dispatch(sortByAmount())
                     break
 
                 default:
-                    props.dispatch(sortByDate())
+                    this.props.dispatch(sortByDate())
             }
 
         }}>
             <option value='date'>Date</option>
             <option value='amount'>Amount</option>
         </select>
+
+        <DateRangePicker
+            startDate = { this.props.filters.startDate }
+            endDate = { this.props.filters.endDate }
+            onDatesChange = { this.onDatesChange }
+            focusedInput = { this.state.focusedInput }
+            onFocusChange = {focused => this.setState({ focused })}
+            numberOfMonths = {1}
+            isOutsideRange = { () => false }
+            showClearDates = { true }
+        />
+
     </div>
-)
+        )
+    }
+}
 
 const mapStateToProps = (state) => {
     return {
-        filters: state.filters
-    }
-}
+      filters: state.filters
+    };
+  };
 
 export default connect (mapStateToProps)(ExpenseListFilters)
