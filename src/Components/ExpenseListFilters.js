@@ -45,7 +45,7 @@ class ExpenseListFilters extends React.Component{
             startDate = { this.props.filters.startDate }
             endDate = { this.props.filters.endDate }
             onDatesChange = { this.onDatesChange }
-            focusedInput = { this.state.focusedInput }
+            focusedInput = { this.state.focused }
             onFocusChange = {focused => this.setState({ focused })}
             numberOfMonths = {1}
             isOutsideRange = { () => false }
