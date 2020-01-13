@@ -9,6 +9,8 @@ import { setTextFilter } from './actions/filters'
 import getVisibleExpenses from './selectors/expenses'
 import * as serviceWorker from './serviceWorker';
 import AppRouter from './routes/AppRoute';
+import './firebase/firebase'
+
 
 
 const store = configureStore()
